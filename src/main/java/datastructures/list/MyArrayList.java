@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @param <E> the type of elements held in this list
  */
-public class MyArrayList<E> {
+public class MyArrayList<E> implements MyList<E> {
 
     private int size;
     private E[] list;
@@ -29,6 +29,7 @@ public class MyArrayList<E> {
      * @param element -- the element to be appended to this list
      * @return true (as specified by {@link java.util.Collection#add}
      */
+    @Override
     public boolean add(E element) {
         this.ensureCapacity();
         list[size] = element;
@@ -45,6 +46,7 @@ public class MyArrayList<E> {
      * @param element -- element to be inserted
      * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index > size())
      */
+    @Override
     public void add(int index, E element) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds.");
@@ -80,6 +82,7 @@ public class MyArrayList<E> {
      * @return the element at the specified position in this list
      * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size())
      */
+    @Override
     public E get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds.");
@@ -106,6 +109,7 @@ public class MyArrayList<E> {
      * @return the element that was removed from the list
      * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size())
      */
+    @Override
     public E remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds.");
@@ -131,6 +135,7 @@ public class MyArrayList<E> {
      * @return the element previously at the specified position
      * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size())
      */
+    @Override
     public E set(int index, E element) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index " + index + " is out of bounds.");
@@ -147,6 +152,7 @@ public class MyArrayList<E> {
      *
      * @return the number of elements in this list
      */
+    @Override
     public int size() {
         return size;
     }

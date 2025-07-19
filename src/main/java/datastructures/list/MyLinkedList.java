@@ -2,9 +2,9 @@ package main.java.datastructures.list;
 
 import java.util.Objects;
 
-public class MyLinkedList<E> {
+public class MyLinkedList<E> implements MyList<E> {
     private static class ListNode<E> {
-        private final E val;
+        private E val;
         private ListNode<E> next;
         private ListNode<E> prev;
 
@@ -34,6 +34,9 @@ public class MyLinkedList<E> {
             this.prev = node;
         }
 
+        public void setVal(E value) {
+            this.val = value;
+        }
     }
 
     private ListNode<E> head;
@@ -70,7 +73,8 @@ public class MyLinkedList<E> {
      *
      * @param element the element to add
      */
-    public void addLast(E element) {
+    @Override
+    public boolean add(E element) {
         ListNode<E> newTail = new ListNode<>(element);
 
         if (head == null) {
@@ -82,6 +86,7 @@ public class MyLinkedList<E> {
             tail = newTail;
         }
         size += 1;
+        return true;
     }
 
     /**
@@ -90,9 +95,10 @@ public class MyLinkedList<E> {
      *
      * @param position the index at which to insert the element (0-based)
      * @param element the element to insert
-     * @throws IndexOutOfBoundsException if position is less than 0 or greater than the size of this list
+     * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index > size)
      */
-    public void insert(int position, E element) {
+    @Override
+    public void add(int position, E element) {
         if (position < 0 || position > size) {
             throw new IndexOutOfBoundsException("Index " + position + " is out of bounds.");
         }
@@ -100,7 +106,7 @@ public class MyLinkedList<E> {
         if (position == 0) {
             this.addFirst(element);
         } else if (position == size) {
-            this.addLast(element);
+            this.add(element);
         } else {
             ListNode<E> temp = head;
 
@@ -146,6 +152,7 @@ public class MyLinkedList<E> {
      * @return the element at the specified index
      * @throws IndexOutOfBoundsException if the position is less than 0 or greater than or equal to size of this list
      */
+    @Override
     public E get(int position) {
         if (position < 0 || position > size - 1) {
             throw new IndexOutOfBoundsException("Index " + position + " is out of bounds.");
@@ -160,6 +167,30 @@ public class MyLinkedList<E> {
         }
 
         return toFind.getVal();
+    }
+
+    /**
+     * Returns the elements at the specified position in this list with the specified element.
+     *
+     * @param position the index of the element to replace
+     * @param element the element to be stored at the specified position
+     * @return the element previously at the specified position
+     * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size)
+     */
+    @Override
+    public E set(int position, E element) {
+        if (position < 0 || position >= size) {
+            throw new IndexOutOfBoundsException("Index " + position + " is out of bounds.");
+        }
+
+        ListNode<E> temp = head;
+        for(int i = 0; i < position; i++) {
+            temp = temp.getNext();
+        }
+
+        E oldValue = temp.getVal();
+        temp.setVal(element);
+        return oldValue;
     }
 
     /**
@@ -214,6 +245,7 @@ public class MyLinkedList<E> {
      * @param position the index at which to remove the element
      * @return the removed element
      */
+    @Override
     public E remove(int position) {
         if (position < 0 || position >= size) {
             throw new IndexOutOfBoundsException("Index " + position + " is out of bounds.");
@@ -252,6 +284,7 @@ public class MyLinkedList<E> {
      *
      * @return the number of elements in this list.
      */
+    @Override
     public int size() {
         return size;
     }
