@@ -1,8 +1,9 @@
 package main.java.datastructures.list;
 
+import main.java.datastructures.queue.MyDeque;
 import java.util.Objects;
 
-public class MyLinkedList<E> implements MyList<E> {
+public class MyLinkedList<E> implements MyList<E>, MyDeque<E> {
     private static class ListNode<E> {
         private E val;
         private ListNode<E> next;
@@ -49,30 +50,7 @@ public class MyLinkedList<E> implements MyList<E> {
         this.size = 0;
     }
 
-    /**
-     * Inserts the specified element at the beginning of the list.
-     *
-     * @param element the element to add
-     */
-    public void addFirst(E element) {
-        ListNode<E> newHead = new ListNode<>(element);
-
-        if (head == null) {
-            head = newHead;
-            tail = head;
-        } else {
-            head.setPrev(newHead);
-            newHead.setNext(head);
-            head = newHead;
-        }
-        size += 1;
-    }
-
-    /**
-     * Appends the specified element to the end of this list.
-     *
-     * @param element the element to add
-     */
+    // List
     @Override
     public boolean add(E element) {
         ListNode<E> newTail = new ListNode<>(element);
@@ -89,14 +67,6 @@ public class MyLinkedList<E> implements MyList<E> {
         return true;
     }
 
-    /**
-     * Inserts the specified element at the specified position in the list.
-     * Time Complexity: O(n)
-     *
-     * @param position the index at which to insert the element (0-based)
-     * @param element the element to insert
-     * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index > size)
-     */
     @Override
     public void add(int position, E element) {
         if (position < 0 || position > size) {
@@ -104,7 +74,7 @@ public class MyLinkedList<E> implements MyList<E> {
         }
 
         if (position == 0) {
-            this.addFirst(element);
+            this.push(element);
         } else if (position == size) {
             this.add(element);
         } else {
@@ -127,31 +97,6 @@ public class MyLinkedList<E> implements MyList<E> {
         }
     }
 
-    /**
-     * Returns the first element in this list.
-     *
-     * @return the first element in this list.
-     */
-    public E getFirst() {
-        return head.getVal();
-    }
-
-    /**
-     * Returns the last element in this list.
-     *
-     * @return the last element in this list.
-     */
-    public E getLast() {
-        return tail.getVal();
-    }
-
-    /**
-     * Returns the element at the specified position in this list.
-     *
-     * @param position the index at which to return the element
-     * @return the element at the specified index
-     * @throws IndexOutOfBoundsException if the position is less than 0 or greater than or equal to size of this list
-     */
     @Override
     public E get(int position) {
         if (position < 0 || position > size - 1) {
@@ -169,14 +114,6 @@ public class MyLinkedList<E> implements MyList<E> {
         return toFind.getVal();
     }
 
-    /**
-     * Returns the elements at the specified position in this list with the specified element.
-     *
-     * @param position the index of the element to replace
-     * @param element the element to be stored at the specified position
-     * @return the element previously at the specified position
-     * @throws IndexOutOfBoundsException if the index is out of range (index < 0 || index >= size)
-     */
     @Override
     public E set(int position, E element) {
         if (position < 0 || position >= size) {
@@ -193,58 +130,6 @@ public class MyLinkedList<E> implements MyList<E> {
         return oldValue;
     }
 
-    /**
-     * Removes and returns the first element from this list.
-     *
-     * @return the first element in this list or {@code null} if this list is empty.
-     */
-    public E removeFirst() {
-        if (head == null) return null;
-
-        E firstElement = head.getVal();
-
-        if (head == tail) {
-            head = null;
-            tail = null;
-        } else {
-            head.getNext().setPrev(null);
-            head = head.getNext();
-        }
-
-        size -= 1;
-
-        return firstElement;
-    }
-
-    /**
-     * Removes and returns the last element from this list.
-     *
-     * @return the last element in this list or {@code null} if this list is empty.
-     */
-    public E removeLast() {
-        if (tail == null) return null;
-
-        E lastElement = tail.getVal();
-
-        if (head == tail) {
-            head = null;
-            tail = null;
-        } else {
-            tail.getPrev().setNext(null);
-            tail = tail.getPrev();
-        }
-
-        size -= 1;
-
-        return lastElement;
-    }
-
-    /**
-     * Removes the element at the specified position in this list.
-     *
-     * @param position the index at which to remove the element
-     * @return the removed element
-     */
     @Override
     public E remove(int position) {
         if (position < 0 || position >= size) {
@@ -254,7 +139,7 @@ public class MyLinkedList<E> implements MyList<E> {
         E removed;
 
         if (position == 0) {
-            removed = this.removeFirst();
+            removed = this.dequeue();
         } else if (position == size - 1) {
             removed = this.removeLast();
         } else {
@@ -279,23 +164,111 @@ public class MyLinkedList<E> implements MyList<E> {
         return removed;
     }
 
-    /**
-     * Returns the number of elements in this list.
-     *
-     * @return the number of elements in this list.
-     */
     @Override
     public int size() {
         return size;
     }
 
-    /**
-     * Returns a string representation of the list elements in order.
-     * The format is: [element1, element2, element3, ...]
-     * If the list is empty, it returns [].
-     *
-     * @return a string representation of this list.
-     */
+    // Queue
+    public E peek() {
+        return head.getVal();
+    }
+
+    @Override
+    public E dequeue() {
+        if (head == null) return null;
+
+        E firstElement = head.getVal();
+
+        if (head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            head.getNext().setPrev(null);
+            head = head.getNext();
+        }
+
+        size -= 1;
+
+        return firstElement;
+    }
+
+    @Override
+    public void enqueue(E element) {
+        ListNode<E> newTail = new ListNode<>(element);
+
+        if (head == null) {
+            head = newTail;
+            tail = head;
+        } else {
+            tail.setNext(newTail);
+            newTail.setPrev(tail);
+            tail = newTail;
+        }
+        size += 1;
+    }
+
+    // Deque
+    @Override
+    public E removeLast() {
+        if (tail == null) return null;
+
+        E lastElement = tail.getVal();
+
+        if (head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            tail.getPrev().setNext(null);
+            tail = tail.getPrev();
+        }
+
+        size -= 1;
+
+        return lastElement;
+    }
+
+    @Override
+    public E getLast() {
+        return tail.getVal();
+    }
+
+    // Deque (Stack functionality)
+    @Override
+    public void push(E element) {
+        ListNode<E> newHead = new ListNode<>(element);
+
+        if (head == null) {
+            head = newHead;
+            tail = head;
+        } else {
+            head.setPrev(newHead);
+            newHead.setNext(head);
+            head = newHead;
+        }
+        size += 1;
+    }
+
+    @Override
+    public E pop() {
+        if (head == null) return null;
+
+        E firstElement = head.getVal();
+
+        if (head == tail) {
+            head = null;
+            tail = null;
+        } else {
+            head.getNext().setPrev(null);
+            head = head.getNext();
+        }
+
+        size -= 1;
+
+        return firstElement;
+    }
+
+    // Object
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -315,18 +288,6 @@ public class MyLinkedList<E> implements MyList<E> {
         return sb.toString();
     }
 
-    /**
-     * The method returns {@code true} if and only if:
-     * <ul>
-     *     <li>The other object is the same reference as this one, or</li>
-     *     <li>The other object is also a MyLinkedList, has the same size, and all the corresponding elements are equal in order.</li>
-     * </ul>
-     *
-     * This method uses {@link Objects#equals(Object, Object)} to compare objects in a null-safe manner.
-     *
-     * @param obj the object to compare this MyLinkedList against
-     * @return {@code true} if the specified obj is equal to this MyLinkedList; {@code false} otherwise
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -338,7 +299,7 @@ public class MyLinkedList<E> implements MyList<E> {
         if(this.size() != other.size()) return false;
 
         ListNode<E> currThis = head;
-        ListNode<?> currOther = (ListNode<?>) other.getFirst();
+        ListNode<?> currOther = (ListNode<?>) other.peek();
 
         while (currThis != null && currOther != null) {
             if(!Objects.equals(currThis.getVal(), currOther.getVal())) {
@@ -351,22 +312,6 @@ public class MyLinkedList<E> implements MyList<E> {
         return currThis == null && currOther == null;
     }
 
-    /**
-     * <p>
-     *     Computes the hash code for this MyLinkedList by combining the hash codes of all elements in order.
-     *     <ul>
-     *         <li>
-     *             This method uses {@link Objects#hashCode(Object)} to generate hash codes for any given element in this MyLinkedList in a null-safe manner.
-     *         </li>
-     *     </ul>
-     * </p>
-     * <p>
-     *     This method ensures that two objects of MyLinkedList with the same elements in the same order have the same hash code,
-     *     maintaining consistency with the {@code equals()} method.
-     * </p>
-     *
-     * @return the computed hash code value for this list
-     */
     @Override
     public int hashCode() {
         int hash = 1;

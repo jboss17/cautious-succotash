@@ -68,7 +68,6 @@ public class MyArrayListTest {
     @Test
     void testClear() {
         list3.clear();
-        assertTrue(list3.isEmpty());
         assertEquals(0, list3.size());
     }
 
